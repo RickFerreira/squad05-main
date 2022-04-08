@@ -1,0 +1,318 @@
+{
+	"info": {
+		"_postman_id": "4e4c0f03-b467-48c6-acd3-8a6cddb8b0d2",
+		"name": "licon",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "comissao",
+			"item": [
+				{
+					"name": "/comissoes",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var uuid = require('uuid');\r",
+									"pm.environment.set(\"numeroComissao\", uuid.v4());\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is successful message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.be.not.eq(undefined);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"comissaoId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipo\": \"PERMANENTE\",\r\n    \"numero\": \"{{numeroComissao}}\",\r\n    \"dataVigenciaInicial\": \"2021-07-05\",\r\n    \"dataVigenciaFinal\": \"2021-07-06\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/comissoes",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"comissoes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/comissoes [FAIL] Data vigência inicial maior que a final",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is failure message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.code).to.be.eq(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipo\": \"PERMANENTE\",\r\n    \"numero\": \"{{$guid}}\",\r\n    \"dataVigenciaInicial\": \"2021-07-06\",\r\n    \"dataVigenciaFinal\": \"2021-07-05\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/comissoes",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"comissoes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/comissoes [FAIL] Número repetido",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is failure message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.code).to.be.eq(422);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipo\": \"PERMANENTE\",\r\n    \"numero\": \"{{numeroComissao}}\",\r\n    \"dataVigenciaInicial\": \"2021-07-05\",\r\n    \"dataVigenciaFinal\": \"2021-07-06\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/comissoes",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"comissoes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/comissoes/{{comissaoId}}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is successful message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.be.eq(pm.environment.get(\"comissaoId\"));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipo\": \"ESPECIAL\",\r\n    \"numero\": \"{{$guid}}\",\r\n    \"dataVigenciaInicial\": \"2020-08-05\",\r\n    \"dataVigenciaFinal\": \"2020-08-06\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/comissoes/{{comissaoId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"comissoes",
+								"{{comissaoId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/comissoes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is successful message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.total).to.be.not.eq(undefined);\r",
+									"    pm.expect(jsonData.items).to.be.not.eq(undefined);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/comissoes?page.index=1&page.size=5&sort.by=numero&sort.order=desc",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"comissoes"
+							],
+							"query": [
+								{
+									"key": "page.index",
+									"value": "1"
+								},
+								{
+									"key": "page.size",
+									"value": "5"
+								},
+								{
+									"key": "sort.by",
+									"value": "numero"
+								},
+								{
+									"key": "sort.order",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/comissoes/{{comissaoId}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204 \", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/comissoes/{{comissaoId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"comissoes",
+								"{{comissaoId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

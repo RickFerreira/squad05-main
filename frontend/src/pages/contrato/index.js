@@ -1,0 +1,95 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { observer } from 'mobx-react';
+import ContratoIndexStore from '../../stores/contrato/indexStore';
+import { DataTable } from 'primereact/datatable';
+import { Button } from 'primereact/button';
+import { PrimeIcons } from 'primereact/api';
+import { BreadCrumb } from 'primereact/breadcrumb';
+import UrlRouter from '../../constants/UrlRouter';
+import GenericIndexPage from '../GenericIndexPage';
+import { getValueDate } from '../../utils/utils';
+
+@observer
+class ContratoIndexPage extends GenericIndexPage {
+  constructor(props) {
+    super(props);
+    this.store = new ContratoIndexStore();
+  }
+
+  render() {
+    const columns = [
+      {
+        field: 'id',
+        header: 'ID',
+        style: { width: '100px' },
+      },
+      {
+        field: 'titulo',
+        header: 'Título',
+      },
+      {
+        field: 'descricao',
+        header: 'Descrição',
+      },
+      {
+        field: 'permiteAditivo',
+        header: 'Permite Aditivo',
+        body: ({ permiteAditivo }) => (permiteAditivo ? 'Sim' : 'Não'),
+      },
+      {
+        field: 'dataVencimento',
+        header: 'Data Vencimento',
+        body: ({ dataVencimento }) => getValueDate(dataVencimento),
+      },
+      {
+        style: { width: '110px' },
+        body: (rowData) => {
+          return (
+            <div className="actions">
+              <Link to={UrlRouter.contrato.editar.replace(':id', rowData.id)}>
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success p-mr-2" />
+              </Link>
+              <Button
+                icon="pi pi-trash"
+                className="p-button-rounded p-button-danger"
+                onClick={() => this.confirmRemove(rowData.id)}
+              />
+            </div>
+          );
+        },
+      },
+    ];
+
+    const header = (
+      <div className="table-header">
+        <Link to={UrlRouter.contrato.novo}>
+          <Button className="p-button" label="Novo" icon={PrimeIcons.PLUS} />
+        </Link>
+        {/* TODO */}
+        {/* <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText type="search" onInput={(e) => console.log(e.target.value)} placeholder="Buscar..." />
+        </span> */}
+      </div>
+    );
+
+    const { listKey, loading } = this.store;
+    const { getDefaultTableProps } = this;
+
+    const breacrumbItems = [{ label: 'Contrato' }];
+
+    return (
+      <>
+        <BreadCrumb model={breacrumbItems} home={this.getHomeBreadCrumb()} />
+        <div className="card page index-table">
+          <DataTable value={listKey} header={header} loading={loading} {...getDefaultTableProps()}>
+            {this.renderColumns(columns)}
+          </DataTable>
+        </div>
+      </>
+    );
+  }
+}
+
+export default ContratoIndexPage;
